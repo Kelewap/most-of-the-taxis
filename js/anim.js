@@ -1,44 +1,25 @@
 
-function drawRectangle(rectangle, context) {
-  context.beginPath();
-  context.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-  context.fillStyle = '#D0B020';
-  context.fill();
-  context.lineWidth = rectangle.borderWidth;
-  context.strokeStyle = 'black';
-  context.stroke();
+function drawCircle(circle, context) {
+    context.beginPath();
+    
+    context.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+    
+    context.fillStyle = "#d0b020";
+    context.fill();
+
+    context.lineWidth = 4;
+    context.strokeStyle = "#000000";
+    context.stroke();
 }
 
-function animate(rectangle, canvas, context, startTime) {
-  // update
-  var time = (new Date()).getTime() - startTime;
+function run(world, deltaTime) {
+    var frameStart = (new Date()).getTime();
 
-  var linearSpeed = 100;
-  // pixels / second
-  var newX = 500 + (-1 * linearSpeed * time / 1000);
+    world.tick(deltaTime);
+    world.render();
 
-  if(newX < canvas.width - rectangle.width - rectangle.borderWidth / 2) {
-    rectangle.x = newX;
-  }
-
-  // clear
-  context.clearRect(0, 0, canvas.width, canvas.height);
-
-  drawRectangle(rectangle, context);
-
-  // request new frame
-  requestAnimFrame( function() {
-    animate(rectangle, canvas, context, startTime);
-  } );
+    requestAnimFrame( function() {
+        var newDeltaTime = (new Date()).getTime() - frameStart;
+        run(world, newDeltaTime);
+    } );
 }
-
-var canvas = document.getElementById('myCanvas');
-var context = canvas.getContext('2d');
-
-var cabRect = {
-  x: 333,
-  y: 100,
-  width: 50,
-  height: 30,
-  borderWidth: 5
-};
