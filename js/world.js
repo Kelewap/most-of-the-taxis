@@ -2,22 +2,47 @@ function World(canvas) {
     this._canvas = canvas;
     this._context = canvas.getContext('2d');
 
-    this.theOnlyCircle = {
-        x: 10,
-        y: 20,
-        radius: 10
-    };
+    this.actors = [
+        {
+            actor: new Actor(),
+            representation: new ActorRepresentation(this._context)
+        },
+        {
+            actor: new Actor(),
+            representation: new ActorRepresentation(this._context)
+        }
+    ];
+    this.actors[1].representation._position.x = 40;
+    this.actors[1].representation._position.y = 60;
 
     this.tick = function(deltaTime) {
-        var velocity = 10;
+        var maxVelocity = 30;
         var deltaSeconds = deltaTime / 1000.0;
 
-        this.theOnlyCircle.x += velocity * deltaSeconds;
+        // iterate over actors
+        // collect their this-tick-behaviour
+        // update world
+        // update actors with new world-view
+        for (var i = 0; i < this.actors.length; ++i) {
+            var entry = this.actors[i];
+
+            var actor = entry.actor;
+            var representation = entry.representation;
+
+            var decision = actor.getDecision();
+            var moveVector = {x: maxVelocity * deltaSeconds, y: 0};
+            representation.move(moveVector);
+        }
     };
 
     this.render = function() {
+        //TODO: pass canvas context as parameter
         this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
-        drawCircle(this.theOnlyCircle, this._context);
+        for (var i = 0; i < this.actors.length; ++i) {
+            var entry = this.actors[i];
+            var representation = entry.representation;
+            representation.render(this._context);
+        }
     };
 }
