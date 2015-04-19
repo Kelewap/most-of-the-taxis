@@ -1,15 +1,22 @@
 var CIRCLE_RADIUS = 10;
+//TODO: inject WorldState/Config somehow
 
 function ActorRepresentation() {
     this._position = {
-        x: 10,
-        y: 20
+        x: 20,
+        y: 100,
+        street: 0,
+        traveledDist: 10,
+        translatedX : 20,   //tmp
+        translatedY : 100   //tmp
     };
 
     this.render = function(context) {
         var circle = {
-            x: this._position.x,
-            y: this._position.y,
+            //x: this._position.x,
+            //y: this._position.y,
+            x: this._position.translatedX,  //tmp
+            y: this._position.translatedY,  //tmp
             radius: CIRCLE_RADIUS
         };
         drawCircle(circle, context);
@@ -18,6 +25,7 @@ function ActorRepresentation() {
     this.move = function(vector) {
         this._position.x += vector.x;
         this._position.y += vector.y;
+        this._position.traveledDist += vector.x;    //tmp
     }
 }
 
