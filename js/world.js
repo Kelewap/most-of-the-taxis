@@ -4,57 +4,30 @@ function World(canvas) {
     // street as connection of intersections
     this.streetsConfig = [
         {from: 1, to: 2},
+        {from: 1, to: 4},
+        {from: 2, to: 1},
         {from: 2, to: 3},
-        {from: 2, to: 4},
         {from: 2, to: 5},
+        {from: 3, to: 2},
+        {from: 3, to: 4},
+        {from: 3, to: 6},
+        {from: 4, to: 1},
+        {from: 4, to: 3},
+        {from: 5, to: 2},
         {from: 5, to: 6},
-        {from: 5, to: 7}
+        {from: 6, to: 3},
+        {from: 6, to: 5}
     ];
     this.intersectionsConfig = {
-        1 : { x: 20, y: 100 },
-        2 : { x: 100, y: 100 },
-        3 : { x: 100, y: 20 },
-        4 : { x: 100, y: 180 },
-        5 : { x: 200, y: 100 },
-        6 : { x: 200, y: 20 },
-        7 : { x: 200, y: 180}
-    };
-    this.worldModel = {};
-
-    this.worldModel = function() {
-        var streets = {};
-        var intersections = {};
-        var getIntersectionsDistance = function (a, b) {
-            return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
-        }
-
-        for (key in this.intersectionsConfig) {
-            var entry = this.intersectionsConfig[key];
-            intersections[key] = {
-                id: key,
-                x: entry.x,
-                y: entry.y,
-                outgoing: [],
-                incoming: []
-            }
-        }
-        // alternatively pass all intersection objects - intersectionsConfig[entry.from] as 'from'/'to'
-        for (key in this.streetsConfig) {
-            var entry = this.streetsConfig[key];
-            streets[key] = {
-                id: key,
-                from: entry.from,
-                to: entry.to,
-                length: getIntersectionsDistance(intersections[entry.from], intersections[entry.to])
-            }
-
-            intersections[streets[key].from].outgoing.push(key);
-            intersections[streets[key].to].incoming.push(key);
-        }
-        return {intersections: intersections, streets: streets};
+        1 : { x: 100, y: 100 },
+        2 : { x: 200, y: 100 },
+        3 : { x: 200, y: 200 },
+        4 : { x: 100, y: 200 },
+        5 : { x: 400, y: 100 },
+        6 : { x: 400, y: 200 }
     };
 
-    this.worldModel = this.worldModel();
+    this.worldModel = new CityModel(this.intersectionsConfig, this.streetsConfig);
     console.log(this.worldModel);
 
     this.actors = [
@@ -79,25 +52,25 @@ function World(canvas) {
             var actor = entry.actor;
             var representation = entry.representation;
 
-            var decision = actor.getDecision();
-            //----
-            //todo: case when there is no outgoing streets in current position
-            var actorStreet = this.worldModel.streets[representation._position.street];
-            if (representation._position.traveledDist >=actorStreet.length) {
-                var availStreets = this.worldModel.intersections[actorStreet.to].outgoing;
-                var newStreetId = getRandomInt(0, availStreets.length);
-                representation._position.street = availStreets[newStreetId];
-                representation._position.traveledDist = 0;
-                console.log(availStreets);
-                console.log(newStreetId);
-                console.log(representation);
-            }
-            // ---
-            representation._position.translatedX = translateCoordinates(actorStreet, representation._position.traveledDist, this.worldModel).x;
-            representation._position.translatedY = translateCoordinates(actorStreet, representation._position.traveledDist, this.worldModel).y;
+            var actorStreet = this.worldModel.streets[representation.street];
 
-            var moveVector = {x: maxVelocity * deltaSeconds, y: 0};
-            representation.move(moveVector);
+            var actorView = {
+                yesMadamItsTimeToTurnSomeway: (representation.traveledDist >= actorStreet.length),
+                availableStreets: actorStreet.to.outgoing
+            };
+
+            var decision = actor.getDecision(actorView);
+
+            if (actorView.yesMadamItsTimeToTurnSomeway) {
+                representation.street = decision.chosenStreet;
+                representation.traveledDist = 0;
+            }
+            representation.traveledDist += decision.velocityPercentage * maxVelocity * deltaSeconds;
+            representation.traveledDist = Math.min(representation.traveledDist, actorStreet.length);
+            var translatedX = translateCoordinates(actorStreet, representation.traveledDist, this.worldModel).x;
+            var translatedY = translateCoordinates(actorStreet, representation.traveledDist, this.worldModel).y;
+
+            representation.setPosition(translatedX, translatedY);
         }
     };
 
@@ -121,10 +94,10 @@ function World(canvas) {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
-// TODO: move to actor
+// TODO: move to actor. nope. move to city
 function translateCoordinates(street, distance, worldModel) {
-    var fromIntersect = worldModel.intersections[street.from];
-    var toIntersect = worldModel.intersections[street.to];
+    var fromIntersect = street.from;
+    var toIntersect = street.to;
     var x = fromIntersect.x + (toIntersect.x - fromIntersect.x) * distance / street.length;
     var y = fromIntersect.y + (toIntersect.y - fromIntersect.y) * distance / street.length;
     return {x : x, y : y};
