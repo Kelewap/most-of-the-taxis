@@ -1,5 +1,6 @@
 var CIRCLE_RADIUS = 10;
 
+//TODO: rename; this is a car! the actor representation is a fking car!!!
 function ActorRepresentation() {
     this._position = {
         x: 20,

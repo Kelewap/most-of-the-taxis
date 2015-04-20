@@ -64,6 +64,8 @@ function World(canvas) {
                 representation.street = decision.chosenStreet;
                 representation.traveledDist = 0;
             }
+            //TODO refer to streets via references
+            actorStreet = this.worldModel.streets[representation.street];
             representation.traveledDist += decision.velocityPercentage * maxVelocity * deltaSeconds;
             representation.traveledDist = Math.min(representation.traveledDist, actorStreet.length);
             var translatedX = translateCoordinates(actorStreet, representation.traveledDist, this.worldModel).x;
