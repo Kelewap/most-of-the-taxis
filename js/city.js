@@ -29,4 +29,12 @@ CityModel = function(intersectionsConfig, streetsConfig) {
         this.streets[key].to.incoming.push(key);
     }
 
+    this.render = function(context) {
+        for (key in this.streets) {
+            //TODO: extract to streets.render()
+            var street = this.streets[key];
+
+            drawLine( {x: street.from.x, y: street.from.y}, {x: street.to.x, y: street.to.y}, context);
+        }
+    }
 };

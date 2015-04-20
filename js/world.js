@@ -37,7 +37,6 @@ function World(canvas) {
         }
     ];
 
-    //TODO: get rid of actor movement logic from this
     this.tick = function(deltaTime) {
         var maxVelocity = 30;
         var deltaSeconds = deltaTime / 1000.0;
@@ -77,6 +76,8 @@ function World(canvas) {
     this.render = function() {
         //TODO: pass canvas context as parameter
         this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+
+        this.worldModel.render(this._context);
 
         for (var i = 0; i < this.actors.length; ++i) {
             var entry = this.actors[i];
