@@ -9,13 +9,13 @@ function ActorRepresentation() {
     this.street = 0;
     this.traveledDist = 10;
 
-    this.render = function(context) {
+    this.render = function(canvas) {
         var circle = {
             x: this._position.x,
             y: this._position.y,
             radius: CIRCLE_RADIUS
         };
-        drawCircle(circle, context);
+        canvas.drawCircle(circle);
     };
 
     this.setPosition = function(x, y) {

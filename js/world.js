@@ -1,6 +1,4 @@
-function World(canvas) {
-    this._canvas = canvas;
-    this._context = canvas.getContext('2d');
+function World() {
     // street as connection of intersections
     this.streetsConfig = [
         {from: 1, to: 2},
@@ -75,16 +73,16 @@ function World(canvas) {
         }
     };
 
-    this.render = function() {
+    this.render = function(canvas) {
         //TODO: pass canvas context as parameter
-        this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        canvas.clear();
 
-        this.worldModel.render(this._context);
+        this.worldModel.render(canvas);
 
         for (var i = 0; i < this.actors.length; ++i) {
             var entry = this.actors[i];
             var representation = entry.representation;
-            representation.render(this._context);
+            representation.render(canvas);
         }
     };
 
