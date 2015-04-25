@@ -34,6 +34,7 @@ function World() {
             representation: new Car()
         }
     ];
+    this.actors[0].representation.street = this.worldModel.streets[0];
 
     this.tick = function(deltaTime) {
         var maxVelocity = 30;
@@ -49,11 +50,9 @@ function World() {
             var actor = entry.actor;
             var representation = entry.representation;
 
-            var actorStreet = this.worldModel.streets[representation.street];
-
             var actorView = {
-                yesMadamItsTimeToTurnSomeway: (representation.traveledDist >= actorStreet.length),
-                availableStreets: actorStreet.to.outgoing
+                yesMadamItsTimeToTurnSomeway: (representation.traveledDist >= representation.street.length),
+                availableStreets: representation.street.to.outgoing
             };
 
             var decision = actor.getDecision(actorView);
@@ -62,14 +61,12 @@ function World() {
                 representation.street = decision.chosenStreet;
                 representation.traveledDist = 0;
             }
-            //TODO refer to streets via references
-            actorStreet = this.worldModel.streets[representation.street];
-            representation.traveledDist += decision.velocityPercentage * maxVelocity * deltaSeconds;
-            representation.traveledDist = Math.min(representation.traveledDist, actorStreet.length);
-            var translatedX = this.worldModel.translatePosition(actorStreet, representation.traveledDist).x;
-            var translatedY = this.worldModel.translatePosition(actorStreet, representation.traveledDist).y;
 
-            representation.setPosition(translatedX, translatedY);
+            representation.traveledDist += decision.velocityPercentage * maxVelocity * deltaSeconds;
+            representation.traveledDist = Math.min(representation.traveledDist, representation.street.length);
+            var carPosition = this.worldModel.translatePosition(representation.street, representation.traveledDist);
+
+            representation.setPosition(carPosition.x, carPosition.y);
         }
     };
 

@@ -18,15 +18,16 @@ City = function(intersectionsConfig, streetsConfig) {
     // alternatively pass all intersection objects - intersectionsConfig[entry.from] as 'from'/'to'
     for (key in streetsConfig) {
         var entry = streetsConfig[key];
-        this.streets[key] = {
+        var theStreet = {
             id: key,
             from: this.intersections[entry.from],
             to: this.intersections[entry.to],
             length: getIntersectionsDistance(this.intersections[entry.from], this.intersections[entry.to])
         };
 
-        this.streets[key].from.outgoing.push(key);
-        this.streets[key].to.incoming.push(key);
+        theStreet.from.outgoing.push(theStreet);
+        theStreet.to.incoming.push(key);
+        this.streets[key] = theStreet;
     }
 
     this.render = function(canvas) {
