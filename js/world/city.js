@@ -1,4 +1,4 @@
-CityModel = function(intersectionsConfig, streetsConfig) {
+City = function(intersectionsConfig, streetsConfig) {
     this.streets = {};
     this.intersections = {};
     var getIntersectionsDistance = function (a, b) {
@@ -36,5 +36,13 @@ CityModel = function(intersectionsConfig, streetsConfig) {
 
             canvas.drawLine( {x: street.from.x, y: street.from.y}, {x: street.to.x, y: street.to.y} );
         }
+    };
+
+    this.translatePosition = function(street, distance) {
+        var fromIntersect = street.from;
+        var toIntersect = street.to;
+        var x = fromIntersect.x + (toIntersect.x - fromIntersect.x) * distance / street.length;
+        var y = fromIntersect.y + (toIntersect.y - fromIntersect.y) * distance / street.length;
+        return {x : x, y : y};
     }
 };

@@ -25,13 +25,13 @@ function World() {
         6 : { x: 400, y: 200 }
     };
 
-    this.worldModel = new CityModel(this.intersectionsConfig, this.streetsConfig);
+    this.worldModel = new City(this.intersectionsConfig, this.streetsConfig);
     console.log(this.worldModel);
 
     this.actors = [
         {
             actor: new Actor(),
-            representation: new ActorRepresentation(this._context)
+            representation: new Car()
         }
     ];
 
@@ -66,15 +66,14 @@ function World() {
             actorStreet = this.worldModel.streets[representation.street];
             representation.traveledDist += decision.velocityPercentage * maxVelocity * deltaSeconds;
             representation.traveledDist = Math.min(representation.traveledDist, actorStreet.length);
-            var translatedX = translateCoordinates(actorStreet, representation.traveledDist, this.worldModel).x;
-            var translatedY = translateCoordinates(actorStreet, representation.traveledDist, this.worldModel).y;
+            var translatedX = this.worldModel.translatePosition(actorStreet, representation.traveledDist).x;
+            var translatedY = this.worldModel.translatePosition(actorStreet, representation.traveledDist).y;
 
             representation.setPosition(translatedX, translatedY);
         }
     };
 
     this.render = function(canvas) {
-        //TODO: pass canvas context as parameter
         canvas.clear();
 
         this.worldModel.render(canvas);
@@ -85,21 +84,4 @@ function World() {
             representation.render(canvas);
         }
     };
-
-}
-
-
-
-// Returns a random integer between min (included) and max (excluded)
-// Using Math.round() will give you a non-uniform distribution!
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
-// TODO: move to actor. nope. move to city
-function translateCoordinates(street, distance, worldModel) {
-    var fromIntersect = street.from;
-    var toIntersect = street.to;
-    var x = fromIntersect.x + (toIntersect.x - fromIntersect.x) * distance / street.length;
-    var y = fromIntersect.y + (toIntersect.y - fromIntersect.y) * distance / street.length;
-    return {x : x, y : y};
 }

@@ -1,7 +1,6 @@
 var CIRCLE_RADIUS = 10;
 
-//TODO: rename; this is a car! the actor representation is a fking car!!!
-function ActorRepresentation() {
+function Car() {
     this._position = {
         x: 20,
         y: 100
@@ -34,9 +33,4 @@ function Actor() {
             chosenStreet: view.availableStreets[ getRandomInt(0, view.availableStreets.length) ]
         }
     };
-}
-
-//TODO not here
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
 }
