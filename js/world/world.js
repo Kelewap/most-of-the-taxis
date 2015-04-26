@@ -30,11 +30,16 @@ function World() {
 
     this.actors = [
         {
-            actor: new Actor(),
+            actor: new Actor(this.worldModel.intersections[6]),
+            representation: new Car()
+        },
+        {
+            actor: new Actor(this.worldModel.intersections[1]),
             representation: new Car()
         }
     ];
     this.actors[0].representation.street = this.worldModel.streets[0];
+    this.actors[1].representation.street = this.worldModel.streets[12];
 
     this.tick = function(deltaTime) {
         var maxVelocity = 30;
@@ -52,7 +57,8 @@ function World() {
 
             var actorView = {
                 yesMadamItsTimeToTurnSomeway: (representation.traveledDist >= representation.street.length),
-                availableStreets: representation.street.to.outgoing
+                availableStreets: representation.street.to.outgoing,
+                position: representation.getPosition()
             };
 
             var decision = actor.getDecision(actorView);
