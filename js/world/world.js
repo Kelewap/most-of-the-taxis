@@ -1,4 +1,4 @@
-function World() {
+function World(city) {
     // street as connection of intersections
     this.streetsConfig = [
         {from: 1, to: 2},
@@ -25,7 +25,8 @@ function World() {
         6 : { x: 400, y: 200 }
     };
 
-    this.worldModel = new City(this.intersectionsConfig, this.streetsConfig);
+    //this.worldModel = new City(this.intersectionsConfig, this.streetsConfig);
+    this.worldModel = city;
     console.log(this.worldModel);
 
     this.actors = [
