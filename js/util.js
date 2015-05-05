@@ -39,3 +39,12 @@ function createManhattan(offset, step, size) {
         streets: streets
     };
 }
+
+function getListOfIntersections(city, keys) {
+    var intersections = [];
+    for (var i = 0; i < keys.length; ++i) {
+        intersections.push(city.intersections[keys[i]]);
+    }
+
+    return intersections;
+}

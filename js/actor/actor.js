@@ -27,9 +27,9 @@ function Car() {
     };
 }
 
-function Actor(destination) {
+function Actor(destinations) {
     //TODO: in fact the destination is to be just a point, not necessarily an intersection
-    this._destination = destination;
+    this._destinations = destinations;
 
     //TODO: refactor all stuff
     var getIntersectionsDistance = function (a, b) {
@@ -37,13 +37,15 @@ function Actor(destination) {
     };
 
     this.getDecision = function(view) {
+        var destination = this._destinations.pop();
+
         // find coolest street
         var coolestStreetKey = 0;
         var minDistance = Infinity;
         for (var key in view.availableStreets) {
             var street = view.availableStreets[key];
             var thisStreetDestination = street.to;
-            var thisDistance = getIntersectionsDistance(thisStreetDestination, this._destination);
+            var thisDistance = getIntersectionsDistance(thisStreetDestination, destination);
 
             if (thisDistance < minDistance) {
                 minDistance = thisDistance;
@@ -52,8 +54,10 @@ function Actor(destination) {
         }
 
         var percentage = 1.0;
-        if (view.position.x == this._destination.x && view.position.y == this._destination.y) {
+        if (view.position.x == destination.x && view.position.y == destination.y) {
             percentage = 0.0;
+        } else {
+            this._destinations.push(destination);
         }
 
         return {

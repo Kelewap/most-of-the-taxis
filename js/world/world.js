@@ -1,41 +1,12 @@
 function World(city) {
-    // street as connection of intersections
-    this.streetsConfig = [
-        {from: 1, to: 2},
-        {from: 1, to: 4},
-        {from: 2, to: 1},
-        {from: 2, to: 3},
-        {from: 2, to: 5},
-        {from: 3, to: 2},
-        {from: 3, to: 4},
-        {from: 3, to: 6},
-        {from: 4, to: 1},
-        {from: 4, to: 3},
-        {from: 5, to: 2},
-        {from: 5, to: 6},
-        {from: 6, to: 3},
-        {from: 6, to: 5}
-    ];
-    this.intersectionsConfig = {
-        1 : { x: 100, y: 100 },
-        2 : { x: 200, y: 100 },
-        3 : { x: 200, y: 200 },
-        4 : { x: 100, y: 200 },
-        5 : { x: 400, y: 100 },
-        6 : { x: 400, y: 200 }
-    };
-
-    //this.worldModel = new City(this.intersectionsConfig, this.streetsConfig);
     this.worldModel = city;
-    console.log(this.worldModel);
-
     this.actors = [
         {
-            actor: new Actor(this.worldModel.intersections[6]),
+            actor: new Actor(getListOfIntersections(this.worldModel, [34, 1])),
             representation: new Car()
         },
         {
-            actor: new Actor(this.worldModel.intersections[1]),
+            actor: new Actor(getListOfIntersections(this.worldModel, [4, 39])),
             representation: new Car()
         }
     ];
