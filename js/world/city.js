@@ -1,6 +1,7 @@
 City = function(intersectionsConfig, streetsConfig) {
     this.streets = {};
     this.intersections = {};
+    this.traffic = {};
     var getIntersectionsDistance = function (a, b) {
         return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
     };
@@ -28,6 +29,7 @@ City = function(intersectionsConfig, streetsConfig) {
         theStreet.from.outgoing.push(theStreet);
         theStreet.to.incoming.push(key);
         this.streets[key] = theStreet;
+        this.traffic[key] = [];
     }
 
     this.render = function(canvas) {

@@ -30,10 +30,23 @@ function Car() {
 function Actor(destinations) {
     //TODO: in fact the destination is to be just a point, not necessarily an intersection
     this._destinations = destinations;
+    this.percentage = 1.0;
+    this.avoidTraffic = false;
 
     //TODO: refactor all stuff
     var getIntersectionsDistance = function (a, b) {
         return Math.sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+    };
+
+    this.adjustSpeed = function(view, coolestStreetKey) {
+        if (view.yesMadamItsTimeToTurnSomeway) {
+            var street = view.availableStreets[coolestStreetKey];
+            if (!isStreetEmpty(view.traffic, street.id)) {
+                if (getNearestCar(view.traffic, street.id).percentage > 0) {
+                    this.percentage = getNearestCar(view.traffic, street.id).percentage;
+                }
+            }
+        }
     };
 
     this.getDecision = function(view) {
@@ -41,6 +54,8 @@ function Actor(destinations) {
 
         // find coolest street
         var coolestStreetKey = 0;
+        var emptyStreetKey = null;
+        var chosenStreetKey = null;
         var minDistance = Infinity;
         for (var key in view.availableStreets) {
             var street = view.availableStreets[key];
@@ -50,19 +65,33 @@ function Actor(destinations) {
             if (thisDistance < minDistance) {
                 minDistance = thisDistance;
                 coolestStreetKey = key;
+                if (this.avoidTraffic) {
+                    //todo: find 'the best' empty street - not the last one
+                    if (isStreetEmpty(view.traffic, street.id)) {
+                        emptyStreetKey = key;
+                    }
+                }
             }
         }
-
-        var percentage = 1.0;
+        if (emptyStreetKey != null) {
+            chosenStreetKey = emptyStreetKey;
+        } else {
+            chosenStreetKey = coolestStreetKey;
+        }
+        console.log(view.yesMadamItsTimeToTurnSomeway);
+        this.adjustSpeed(view, chosenStreetKey);
         if (view.position.x == destination.x && view.position.y == destination.y) {
-            percentage = 0.0;
+            this.percentage = 0.0;
+            console.log("in place");
         } else {
             this._destinations.push(destination);
         }
 
         return {
-            velocityPercentage: percentage,
-            chosenStreet: view.availableStreets[coolestStreetKey]
+            velocityPercentage: this.percentage,
+            chosenStreet: view.availableStreets[chosenStreetKey]
         }
     };
 }
+
+

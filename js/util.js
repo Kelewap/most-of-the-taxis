@@ -48,3 +48,16 @@ function getListOfIntersections(city, keys) {
 
     return intersections;
 }
+
+function isStreetEmpty(traffic, streetId) {
+    return traffic[streetId] === undefined || traffic[streetId] == null || traffic[streetId].length == 0;
+}
+
+function getNearestCar(traffic, streetId) {
+    if (isStreetEmpty(traffic, streetId)) {
+        return null;
+    } else {
+        var len = traffic[streetId].length;
+        return traffic[streetId][len-1];
+    }
+}
