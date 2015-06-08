@@ -31,6 +31,7 @@ function Actor(destinations) {
     //TODO: in fact the destination is to be just a point, not necessarily an intersection
     this._destinations = destinations;
     this.percentage = 1.0;
+    this.currentPercentage = this.percentage;
     this.avoidTraffic = false;
 
     //TODO: refactor all stuff
@@ -41,10 +42,10 @@ function Actor(destinations) {
     this.adjustSpeed = function(view, coolestStreetKey) {
         if (view.yesMadamItsTimeToTurnSomeway) {
             var street = view.availableStreets[coolestStreetKey];
-            if (!isStreetEmpty(view.traffic, street.id)) {
-                if (getNearestCar(view.traffic, street.id).percentage > 0) {
-                    this.percentage = getNearestCar(view.traffic, street.id).percentage;
-                }
+            if (!isStreetEmpty(view.traffic, street.id) && getNearestCar(view.traffic, street.id).percentage > 0) {
+                this.currentPercentage = getNearestCar(view.traffic, street.id).percentage;
+            } else {
+                this.currentPercentage = this.percentage;
             }
         }
     };
@@ -81,14 +82,14 @@ function Actor(destinations) {
         console.log(view.yesMadamItsTimeToTurnSomeway);
         this.adjustSpeed(view, chosenStreetKey);
         if (view.position.x == destination.x && view.position.y == destination.y) {
-            this.percentage = 0.0;
+            this.currentPercentage = 0.0;
             console.log("in place");
         } else {
             this._destinations.push(destination);
         }
 
         return {
-            velocityPercentage: this.percentage,
+            velocityPercentage: this.currentPercentage,
             chosenStreet: view.availableStreets[chosenStreetKey]
         }
     };
