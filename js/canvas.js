@@ -6,12 +6,12 @@ function Canvas(htmlCanvas) {
         this._renderContext.clearRect(0, 0, this._htmlCanvas.width, this._htmlCanvas.height);
     };
 
-    this.drawCircle = function(circle) {
+    this.drawCircle = function(circle, color) {
         this._renderContext.beginPath();
 
         this._renderContext.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
 
-        this._renderContext.fillStyle = "#d0b020";
+        this._renderContext.fillStyle = color;
         this._renderContext.fill();
 
         this._renderContext.lineWidth = 4;

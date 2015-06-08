@@ -1,12 +1,13 @@
 var CIRCLE_RADIUS = 10;
 
-function Car() {
+function Car(color) {
     this._position = {
         x: 20,
         y: 100
     };
     this.street = 0;
     this.traveledDist = 10;
+    this._color = color;
 
     this.render = function(canvas) {
         var circle = {
@@ -14,7 +15,7 @@ function Car() {
             y: this._position.y,
             radius: CIRCLE_RADIUS
         };
-        canvas.drawCircle(circle);
+        canvas.drawCircle(circle, this._color);
     };
 
     this.setPosition = function(x, y) {
@@ -52,39 +53,44 @@ function Actor(destinations) {
     this.getDecision = function(view) {
         var destination = this._destinations.pop();
 
-        // find coolest street
-        var coolestStreetKey = 0;
-        var emptyStreetKey = null;
-        var chosenStreetKey = null;
-        var minDistance = Infinity;
-        for (var key in view.availableStreets) {
-            var street = view.availableStreets[key];
-            var thisStreetDestination = street.to;
-            var thisDistance = getIntersectionsDistance(thisStreetDestination, destination);
+        if (destination) {
+            // find coolest street
+            var coolestStreetKey = 0;
+            var emptyStreetKey = null;
+            var chosenStreetKey = null;
+            var minDistance = Infinity;
+            for (var key in view.availableStreets) {
+                var street = view.availableStreets[key];
+                var thisStreetDestination = street.to;
+                var thisDistance = getIntersectionsDistance(thisStreetDestination, destination);
 
-            if (thisDistance < minDistance) {
-                minDistance = thisDistance;
-                coolestStreetKey = key;
-                if (this.avoidTraffic) {
-                    //todo: find 'the best' empty street - not the last one
-                    if (isStreetEmpty(view.traffic, street.id)) {
-                        emptyStreetKey = key;
+                if (thisDistance < minDistance) {
+                    minDistance = thisDistance;
+                    coolestStreetKey = key;
+                    if (this.avoidTraffic) {
+                        //todo: find 'the best' empty street - not the last one
+                        if (isStreetEmpty(view.traffic, street.id)) {
+                            emptyStreetKey = key;
+                        }
                     }
                 }
             }
-        }
-        if (emptyStreetKey != null) {
-            chosenStreetKey = emptyStreetKey;
-        } else {
-            chosenStreetKey = coolestStreetKey;
-        }
-        console.log(view.yesMadamItsTimeToTurnSomeway);
-        this.adjustSpeed(view, chosenStreetKey);
-        if (view.position.x == destination.x && view.position.y == destination.y) {
-            this.percentage = 0.0;
-            console.log("in place");
-        } else {
-            this._destinations.push(destination);
+            if (emptyStreetKey != null) {
+                chosenStreetKey = emptyStreetKey;
+            } else {
+                chosenStreetKey = coolestStreetKey;
+            }
+            console.log(view.yesMadamItsTimeToTurnSomeway);
+            this.adjustSpeed(view, chosenStreetKey);
+            if (view.position.x == destination.x && view.position.y == destination.y) {
+                //FIXME not by if like that
+                if (this._destinations.length == 0) {
+                    this.percentage = 0.0;
+                }
+                console.log("in place");
+            } else {
+                this._destinations.push(destination);
+            }
         }
 
         return {
