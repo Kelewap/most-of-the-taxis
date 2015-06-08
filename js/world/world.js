@@ -1,18 +1,13 @@
 function World(city) {
     this.worldModel = city;
-    this.actors = [
-        {
-            actor: new Actor(getListOfIntersections(this.worldModel, [5, 34])),
+    this.actors = [];
+    for (var i = 0; i < 16; i++) {
+        this.actors[i] = {
+            actor: createRandomActor(this.worldModel, 35),
             representation: new Car()
-        },
-        {
-            actor: new Actor(getListOfIntersections(this.worldModel, [6, 34])),
-            representation: new Car()
-        }
-    ];
-    this.actors[0].representation.street = this.worldModel.streets[0];
-    this.actors[0].actor.percentage = 1.75;
-    this.actors[1].representation.street = this.worldModel.streets[4];
+        };
+        this.actors[i].representation.street = this.worldModel.streets[getRandomInt(1, 35)];
+    }
 
     this.tick = function(deltaTime) {
         var maxVelocity = 50;

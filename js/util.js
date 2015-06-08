@@ -61,3 +61,7 @@ function getNearestCar(traffic, streetId) {
         return traffic[streetId][len-1];
     }
 }
+
+function createRandomActor(city, strangeNumber) {
+    return new Actor(getListOfIntersections(city, [getRandomInt(1, strangeNumber), getRandomInt(1, strangeNumber)]))
+}

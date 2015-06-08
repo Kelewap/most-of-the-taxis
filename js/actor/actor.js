@@ -30,7 +30,7 @@ function Car() {
 function Actor(destinations) {
     //TODO: in fact the destination is to be just a point, not necessarily an intersection
     this._destinations = destinations;
-    this.percentage = 1.0;
+    this.percentage = getRandomInt(1, 20)/10;
     this.currentPercentage = this.percentage;
     this.avoidTraffic = false;
 
